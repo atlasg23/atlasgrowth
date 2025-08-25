@@ -1,0 +1,504 @@
+Perfect — here’s a **single copy-paste prompt** for Replit’s agent that:
+
+* Cleans up your **Next.js 14** project,
+* Redoes the **file/folder structure** with modular templates + sections,
+* Fixes **Tailwind/Prettier** setup and CSS imports,
+* Adds a **temporary loader** (local JSON) so `/s/[slug]` renders immediately,
+* **Commits & pushes** at the end.
+
+When this is done and running, we’ll swap the loader to **Supabase** in your next prompt.
+
+---
+
+## 🔧 Replit Agent Prompt (paste this verbatim)
+
+**You are working in a Next.js 14 (App Router) repo. Perform these tasks in order. Do not introduce Vite or Express.**
+
+### 0) Dependencies & housekeeping
+
+1. Ensure package scripts exist:
+
+   * Add/update in `package.json`:
+
+     ```json
+     {
+       "scripts": {
+         "dev": "next dev",
+         "build": "next build",
+         "start": "next start",
+         "lint": "next lint"
+       }
+     }
+     ```
+2. Install dev tools:
+
+   ```bash
+   npm i -D prettier prettier-plugin-tailwindcss
+   npm i tailwindcss postcss autoprefixer -D
+   ```
+3. Create/overwrite `.prettierrc`:
+
+   ```json
+   { "singleQuote": true, "semi": true, "plugins": ["prettier-plugin-tailwindcss"] }
+   ```
+4. Create/overwrite `.gitignore` (append if exists):
+
+   ```
+   .next/
+   node_modules/
+   .env
+   .env.*
+   *.log
+   .DS_Store
+   .vercel/
+   ```
+5. If a folder named `public/ stock` exists (space in the name), rename it to `public/stock` using `git mv`. If `.next` is tracked, untrack it:
+
+   ```bash
+   git rm -r --cached .next || true
+   ```
+
+### 1) Tailwind & CSS wiring
+
+1. Create/overwrite `tailwind.config.ts`:
+
+   ```ts
+   import type { Config } from 'tailwindcss';
+   const config: Config = {
+     content: [
+       './app/**/*.{ts,tsx}',
+       './components/**/*.{ts,tsx}',
+       './templates/**/*.{ts,tsx}'
+     ],
+     theme: { extend: {} },
+     plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')]
+   };
+   export default config;
+   ```
+2. Create/overwrite `postcss.config.js`:
+
+   ```js
+   module.exports = {
+     plugins: {
+       tailwindcss: {},
+       autoprefixer: {}
+     }
+   };
+   ```
+3. Ensure `app/globals.css` contains Tailwind directives and a couple helpers:
+
+   ```css
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+
+   :root {
+     --primary: #111827; /* default */
+     --secondary: #2563eb;
+   }
+
+   .btn-primary { @apply inline-flex items-center gap-2 rounded px-4 py-2 bg-[var(--primary)] text-white; }
+   .btn-outline { @apply inline-flex items-center gap-2 rounded px-4 py-2 border border-[var(--primary)] text-[var(--primary)]; }
+   ```
+
+### 2) Types and data loader (temporary JSON; Supabase later)
+
+1. Create `types/biz.ts`:
+
+   ```ts
+   export type Biz = {
+     id?: string;
+     name: string;
+     niche: 'HVAC' | 'Plumbing' | string;
+     slug: string;
+     phone?: string;
+     email1?: string;
+     email1_status?: 'valid' | 'invalid' | 'unknown';
+     addr1?: string; city?: string; state?: string; postal?: string;
+     latitude?: number; longitude?: number;
+     rating?: number; reviews?: number; reviews_link?: string;
+     logo?: string; logo_good?: boolean;
+     facebook?: string; instagram?: string;
+     primary_color?: string; secondary_color?: string;
+     site?: string;
+   };
+   ```
+2. Add `data/businesses.json` with 4 sample rows (two per niche):
+
+   ```json
+   [
+     {
+       "slug":"acmeplumbing","name":"Acme Plumbing","niche":"Plumbing",
+       "phone":"+15045550111","email1":"hello@acmeplumbing.com","email1_status":"valid",
+       "addr1":"123 Oak St","city":"New Orleans","state":"LA","postal":"70115",
+       "latitude":29.9239,"longitude":-90.101,"rating":4.7,"reviews":128,
+       "reviews_link":"https://maps.google.com/?q=Acme+Plumbing+New+Orleans",
+       "logo":"https://via.placeholder.com/300x120?text=Acme+Logo","logo_good":true,
+       "facebook":"https://facebook.com/acmeplumbingnola","instagram":"https://instagram.com/acmeplumbingnola",
+       "primary_color":"#0EA5E9","secondary_color":"#F59E0B","site":"https://acmeplumbing.example"
+     },
+     {
+       "slug":"bayoublueplumbing","name":"Bayou Blue Plumbing","niche":"Plumbing",
+       "phone":"+15045550222","email1":"info@bayoublueplumbing.com","email1_status":"invalid",
+       "addr1":"77 Chartres St","city":"New Orleans","state":"LA","postal":"70116",
+       "latitude":29.961,"longitude":-90.0618,"rating":4.2,"reviews":52,
+       "reviews_link":"https://maps.google.com/?q=Bayou+Blue+Plumbing",
+       "logo":"https://via.placeholder.com/300x120?text=Bayou+Blue+Logo","logo_good":false,
+       "facebook":"https://facebook.com/bayoublueplumbing","instagram":"",
+       "primary_color":"#F59E0B","secondary_color":"#0EA5E9","site":"https://bayoublueplumbing.example"
+     },
+     {
+       "slug":"coolbreezehvac","name":"Cool Breeze HVAC","niche":"HVAC",
+       "phone":"+15045550333","email1":"contact@coolbreezehvac.com","email1_status":"valid",
+       "addr1":"901 Magazine St","city":"New Orleans","state":"LA","postal":"70130",
+       "latitude":29.9434,"longitude":-90.0684,"rating":4.8,"reviews":211,
+       "reviews_link":"https://maps.google.com/?q=Cool+Breeze+HVAC",
+       "logo":"https://via.placeholder.com/300x120?text=Cool+Breeze+Logo","logo_good":true,
+       "facebook":"https://facebook.com/coolbreezehvac","instagram":"https://instagram.com/coolbreezehvac",
+       "primary_color":"#1E3A8A","secondary_color":"#10B981","site":"https://coolbreezehvac.example"
+     },
+     {
+       "slug":"nolahvacpros","name":"NOLA HVAC Pros","niche":"HVAC",
+       "phone":"+15045550444","email1":"book@nolahvacpros.com","email1_status":"unknown",
+       "addr1":"445 Tchoupitoulas St","city":"New Orleans","state":"LA","postal":"70130",
+       "latitude":29.9448,"longitude":-90.0667,"rating":4.5,"reviews":89,
+       "reviews_link":"https://maps.google.com/?q=NOLA+HVAC+Pros",
+       "logo":"https://via.placeholder.com/300x120?text=NOLA+HVAC+Pros+Logo","logo_good":false,
+       "facebook":"","instagram":"",
+       "primary_color":"#1E3A8A","secondary_color":"#10B981","site":""
+     }
+   ]
+   ```
+3. Create `lib/biz.ts` (temporary loader):
+
+   ```ts
+   import data from '@/data/businesses.json';
+   import type { Biz } from '@/types/biz';
+
+   export async function getAllSlugs(): Promise<string[]> {
+     return (data as Biz[]).map(d => d.slug);
+   }
+   export async function getBizBySlug(slug: string): Promise<Biz | null> {
+     const row = (data as Biz[]).find(d => d.slug === slug);
+     return row ?? null;
+   }
+   ```
+
+### 3) Components & utilities
+
+1. Create `components/Stars.tsx`:
+
+   ```tsx
+   export default function Stars({ rating = 0 }: { rating?: number }) {
+     const r = Math.max(0, Math.min(5, rating));
+     const full = Math.floor(r);
+     const half = r - full >= 0.5;
+     const empty = 5 - full - (half ? 1 : 0);
+
+     const Star = ({ fill = 1 }: { fill?: 0 | 0.5 | 1 }) => (
+       <svg width="18" height="18" viewBox="0 0 20 20" className="text-yellow-500">
+         <defs>
+           <linearGradient id="half">
+             <stop offset="50%" stopColor="currentColor" />
+             <stop offset="50%" stopColor="transparent" />
+           </linearGradient>
+         </defs>
+         <path d="M10 1.5l2.7 5.5 6.1.9-4.4 4.3 1 6.1L10 15.5 4.6 18.3l1-6.1-4.4-4.3 6.1-.9L10 1.5z"
+               fill={fill === 1 ? 'currentColor' : fill === 0.5 ? 'url(#half)' : 'none'}
+               stroke="currentColor" />
+       </svg>
+     );
+
+     return (
+       <div className="flex">
+         {Array.from({ length: full }).map((_, i) => <Star key={'f'+i} fill={1} />)}
+         {half && <Star fill={0.5} />}
+         {Array.from({ length: empty }).map((_, i) => <Star key={'e'+i} fill={0} />)}
+       </div>
+     );
+   }
+   ```
+2. Create `components/TemplateShell.tsx`:
+
+   ```tsx
+   export default function TemplateShell(
+     { primary, secondary, children }:
+     { primary: string; secondary: string; children: React.ReactNode }
+   ) {
+     return (
+       <div style={{ ['--primary' as any]: primary, ['--secondary' as any]: secondary }}>
+         <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+       </div>
+     );
+   }
+   ```
+
+### 4) Templates (modular; sections per template)
+
+**Folder layout:**
+
+```
+/templates
+  /plumbing_t1
+    /sections/Hero.tsx
+    /sections/About.tsx
+    /sections/Services.tsx
+    /sections/Reviews.tsx
+    /sections/Contact.tsx
+    index.tsx
+  /hvac_t1
+    /sections/Hero.tsx
+    /sections/About.tsx
+    /sections/Services.tsx
+    /sections/Reviews.tsx
+    /sections/Contact.tsx
+    index.tsx
+```
+
+**Create `templates/plumbing_t1/index.tsx`:**
+
+```tsx
+import type { Biz } from '@/types/biz';
+import Hero from './sections/Hero';
+import About from './sections/About';
+import Services from './sections/Services';
+import Reviews from './sections/Reviews';
+import Contact from './sections/Contact';
+
+export default function PlumbingT1({ biz }: { biz: Biz }) {
+  return (
+    <>
+      <Hero biz={biz} />
+      <About biz={biz} />
+      <Services biz={biz} />
+      <Reviews biz={biz} />
+      <Contact biz={biz} />
+    </>
+  );
+}
+```
+
+**Create `templates/hvac_t1/index.tsx` identical** but import its own sections.
+
+**Sections (create concise files):**
+
+`plumbing_t1/sections/Hero.tsx`
+
+```tsx
+import type { Biz } from '@/types/biz';
+import Stars from '@/components/Stars';
+
+export default function Hero({ biz }: { biz: Biz }) {
+  const cityState = [biz.city, biz.state].filter(Boolean).join(', ');
+  return (
+    <section className="py-10">
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          {biz.logo_good && biz.logo
+            ? <img src={biz.logo} alt={`${biz.name} logo`} className="h-12 mb-4" />
+            : <h1 className="text-3xl font-bold mb-1">{biz.name}</h1>}
+          <h2 className="text-xl text-gray-700 mb-3">{biz.niche} in {cityState || biz.city || ''}</h2>
+          {biz.rating && biz.reviews && (
+            <div className="mb-4 flex items-center gap-2">
+              <Stars rating={biz.rating} />
+              <span className="text-sm text-gray-600">
+                {biz.rating.toFixed(1)} ({biz.reviews}){biz.reviews_link && <> • <a className="underline" href={biz.reviews_link}>Read reviews</a></>}
+              </span>
+            </div>
+          )}
+          <div className="flex gap-3">
+            {biz.phone && <a href={`tel:${biz.phone}`} className="btn-primary">Call Now</a>}
+            {biz.reviews_link && <a href={biz.reviews_link} className="btn-outline">Read Reviews</a>}
+          </div>
+        </div>
+        <div><img src="/stock/plumbing/hero.jpg" alt="" className="w-full rounded-lg" /></div>
+      </div>
+    </section>
+  );
+}
+```
+
+`plumbing_t1/sections/About.tsx`
+
+```tsx
+import type { Biz } from '@/types/biz';
+export default function About({ biz }: { biz: Biz }) {
+  const cityState = [biz.city, biz.state].filter(Boolean).join(', ');
+  return (
+    <section className="py-10">
+      <div className="grid md:grid-cols-2 gap-8 items-center">
+        <img src="/stock/plumbing/about.jpg" alt="" className="w-full rounded-lg" />
+        <div>
+          <h3 className="text-2xl font-semibold mb-3">About Us</h3>
+          <p className="text-gray-700">
+            We provide {biz.niche.toLowerCase()} services in {cityState || biz.city || ''}. Licensed & insured. Upfront pricing and same-day service available.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+`plumbing_t1/sections/Services.tsx`
+
+```tsx
+import type { Biz } from '@/types/biz';
+const DEFAULTS = ['Leak Repair', 'Drain Cleaning', 'Water Heaters', 'Fixture Install'];
+export default function Services({}: { biz: Biz }) {
+  return (
+    <section className="py-10">
+      <h3 className="text-2xl font-semibold mb-4">Services</h3>
+      <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {DEFAULTS.map(s => (
+          <div key={s} className="rounded border p-4">
+            <div className="font-medium">{s}</div>
+            <div className="text-sm text-gray-600">Fast, professional {s.toLowerCase()}.</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+```
+
+`plumbing_t1/sections/Reviews.tsx`
+
+```tsx
+import type { Biz } from '@/types/biz';
+export default function Reviews({ biz }: { biz: Biz }) {
+  return (
+    <section className="py-10">
+      <h3 className="text-2xl font-semibold mb-4">What customers say</h3>
+      <div className="grid sm:grid-cols-3 gap-4">
+        {['Prompt and professional.', 'Fair pricing and quality work.', 'Highly recommend.'].map((q, i) => (
+          <div key={i} className="rounded border p-4 text-gray-700">{q}</div>
+        ))}
+      </div>
+      {biz.reviews_link && <a className="btn-outline mt-4 inline-block" href={biz.reviews_link}>Read more on Google</a>}
+    </section>
+  );
+}
+```
+
+`plumbing_t1/sections/Contact.tsx`
+
+```tsx
+import type { Biz } from '@/types/biz';
+
+function fallbackEmail(biz: Biz) {
+  if (biz.email1 && biz.email1_status === 'valid') return biz.email1;
+  try {
+    const url = new URL(biz.site || '');
+    return `example@${url.hostname.replace(/^www\./,'')}`;
+  } catch { return `${biz.slug}@example.com`; }
+}
+
+export default function Contact({ biz }: { biz: Biz }) {
+  const email = fallbackEmail(biz);
+  const address = [biz.addr1, [biz.city, biz.state].filter(Boolean).join(', '), biz.postal].filter(Boolean).join(' • ');
+
+  return (
+    <section className="py-10">
+      <h3 className="text-2xl font-semibold mb-4">Contact</h3>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2 text-gray-700">
+          {biz.phone && <div><span className="font-medium">Phone:</span> <a href={`tel:${biz.phone}`}>{biz.phone}</a></div>}
+          <div><span className="font-medium">Email:</span> <a href={`mailto:${email}`}>{email}</a></div>
+          {address && <div><span className="font-medium">Address:</span> {address}</div>}
+          <div className="flex gap-3 pt-2">
+            {biz.facebook && <a className="underline" href={biz.facebook}>Facebook</a>}
+            {biz.instagram && <a className="underline" href={biz.instagram}>Instagram</a>}
+          </div>
+        </div>
+        <div>
+          {biz.latitude && biz.longitude && (
+            <iframe
+              title="map"
+              className="w-full h-60 rounded"
+              src={`https://maps.google.com/maps?q=${biz.latitude},${biz.longitude}&z=12&output=embed`}
+            />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+> For `hvac_t1`, duplicate these five section files and swap defaults/stock images to `/stock/hvac/*` and HVAC service names: `AC Repair`, `Heating Repair`, `Installations`, `Maintenance`.
+
+### 5) Page route
+
+Create/overwrite `app/s/[slug]/page.tsx`:
+
+```tsx
+import TemplateShell from '@/components/TemplateShell';
+import { getAllSlugs, getBizBySlug } from '@/lib/biz';
+import PlumbingT1 from '@/templates/plumbing_t1';
+import HvacT1 from '@/templates/hvac_t1';
+import type { Biz } from '@/types/biz';
+
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map(slug => ({ slug }));
+}
+
+const nicheDefaults = (biz: Biz) => {
+  const isPlumb = biz.niche?.toLowerCase().includes('plumb');
+  return {
+    primary: biz.primary_color || (isPlumb ? '#0EA5E9' : '#1E3A8A'),
+    secondary: biz.secondary_color || (isPlumb ? '#F59E0B' : '#10B981'),
+    isPlumb
+  };
+};
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const biz = await getBizBySlug(params.slug);
+  if (!biz) { return null; } // replace with notFound() if you prefer
+  const { primary, secondary, isPlumb } = nicheDefaults(biz);
+  const T = isPlumb ? PlumbingT1 : HvacT1;
+
+  return (
+    <TemplateShell primary={primary} secondary={secondary}>
+      <T biz={biz} />
+    </TemplateShell>
+  );
+}
+```
+
+### 6) Assets
+
+Create folders if they don’t exist:
+
+```
+public/stock/plumbing/hero.jpg
+public/stock/plumbing/about.jpg
+public/stock/hvac/hero.jpg
+public/stock/hvac/about.jpg
+```
+
+(Place placeholder images or keep empty; the page will still render.)
+
+### 7) Commit & push
+
+Run:
+
+```bash
+npm run build || true
+npx prettier . --write
+git add -A
+git commit -m "refactor: modular templates/sections, Tailwind/Prettier wiring, temporary JSON loader; /s/[slug] route"
+git push
+```
+
+**Acceptance criteria:**
+
+* `npm run dev` then visit `/s/acmeplumbing` and `/s/coolbreezehvac` → pages render with template-specific sections.
+* Colors applied via CSS variables; logo shows only when `logo_good` is true.
+* No index/directory page exists; no cross-links.
+* Prettier organizes Tailwind classes; no broken CSS imports.
+
+---
+
+When this lands and renders locally, ping me and we’ll replace `lib/biz.ts` with **Supabase** (read-only SELECT) while keeping templates untouched.
