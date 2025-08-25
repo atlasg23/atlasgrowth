@@ -1,0 +1,91 @@
+# Replit Agent Prompt for Next.js Business Directory
+
+Copy and paste this exact prompt to Replit Agent to get a proper Next.js 14 application:
+
+---
+
+**Create a Next.js 14 App Router application (NOT React+Express) with the following specifications:**
+
+## Core Requirements
+- Use Next.js 14 with App Router (app/ directory structure)
+- TypeScript + Tailwind CSS
+- Static Site Generation (SSG) with generateStaticParams()
+- Individual business pages at `/{template_key}/{slug}` routes
+- NO directory index page, NO cross-linking between businesses
+
+## Data Structure
+- Read from `data/businesses.csv` with these exact headers:
+```
+slug,name,niche,template_key,phone,email1,email1_status,addr1,city,state,postal,latitude,longitude,rating,reviews,reviews_link,logo,logo_good,facebook,instagram,primary_color,secondary_color,site
+```
+
+## Routing Structure
+- `app/[template]/[slug]/page.tsx` - Main business page route
+- `app/layout.tsx` - Root layout
+- `app/globals.css` - Global styles
+
+## Templates
+Create 2 templates in `/templates/` directory:
+- `plumbing_t1.tsx` - For businesses with template_key='plumbing_t1'
+- `hvac_t1.tsx` - For businesses with template_key='hvac_t1'
+
+## Template Features (Both Templates)
+1. **Header**: Business logo (if logo_good=true) or text name + "Call Now" button
+2. **Hero**: Business name, location, phone, star rating, stock hero image
+3. **About**: Description with stock about image
+4. **Services**: 
+   - Plumbing: Leak Repair, Drain Cleaning, Water Heaters, Fixture Install
+   - HVAC: AC Repair, Heating Repair, Installations, Maintenance
+5. **Reviews**: 3 placeholder customer reviews + link to Google reviews
+6. **Contact**: Phone, email, address, social media icons, embedded map
+
+## Custom Colors
+- CSS variables set on page root from CSV primary_color/secondary_color
+- Defaults: Plumbing (#0EA5E9, #F59E0B), HVAC (#1E3A8A, #10B981)
+- Use Tailwind arbitrary values: `bg-[var(--primary)]`
+
+## Email Logic
+- Show email1 only if email1_status='valid'
+- Otherwise show `example@{domain}` where domain comes from site field or {slug}.com
+
+## SEO & Metadata
+- Dynamic page title: `{name} | {niche} in {city}`
+- Meta description with business info
+- JSON-LD LocalBusiness structured data
+
+## Images
+- Generate professional stock images for:
+  - `/public/stock/plumbing/hero.jpg`
+  - `/public/stock/plumbing/about.jpg` 
+  - `/public/stock/hvac/hero.jpg`
+  - `/public/stock/hvac/about.jpg`
+
+## CSV Data Loading
+Create `lib/loadBiz.ts` with:
+- `getAllSlugs(): string[]`
+- `getBizBySlug(slug: string): Biz | null`
+- `getAllBusinessesByTemplate(template_key): Biz[]`
+
+## Sample Routes That Should Work
+- `/plumbing_t1/acmeplumbing` (Acme Plumbing)
+- `/plumbing_t1/bayoublueplumbing` (Bayou Blue Plumbing)  
+- `/hvac_t1/coolbreezehvac` (Cool Breeze HVAC)
+- `/hvac_t1/nolahvacpros` (NOLA HVAC Pros)
+
+## Sample CSV Data
+```csv
+slug,name,niche,template_key,phone,email1,email1_status,addr1,city,state,postal,latitude,longitude,rating,reviews,reviews_link,logo,logo_good,facebook,instagram,primary_color,secondary_color,site
+acmeplumbing,Acme Plumbing,Plumbing,plumbing_t1,+15045550111,hello@acmeplumbing.com,valid,123 Oak St,New Orleans,LA,70115,29.9239,-90.1010,4.7,128,https://maps.google.com/?q=Acme+Plumbing+New+Orleans,https://via.placeholder.com/300x120?text=Acme+Logo,true,https://facebook.com/acmeplumbingnola,https://instagram.com/acmeplumbingnola,#0EA5E9,#F59E0B,https://acmeplumbing.example
+coolbreezehvac,Cool Breeze HVAC,HVAC,hvac_t1,+15045550333,contact@coolbreezehvac.com,valid,901 Magazine St,New Orleans,LA,70130,29.9434,-90.0684,4.8,211,https://maps.google.com/?q=Cool+Breeze+HVAC,https://via.placeholder.com/300x120?text=Cool+Breeze+Logo,true,https://facebook.com/coolbreezehvac,https://instagram.com/coolbreezehvac,#1E3A8A,#10B981,https://coolbreezehvac.example
+```
+
+## Key Points
+- This must be a PURE Next.js 14 application, not React+Express+Vite
+- Use `npm run dev` to run Next.js development server
+- Each business gets an isolated SEO-optimized website
+- No shared navigation or directory listing
+- Templates render based on template_key matching the route
+
+---
+
+**Important: Make sure this creates a real Next.js application with proper App Router file structure, not a hybrid React/Express setup.**
