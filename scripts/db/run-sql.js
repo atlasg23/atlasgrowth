@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
+require('dotenv').config({ path: path.join(__dirname, '../../.env.local') });
 
 const DRY = process.argv.includes('--dry');
 const MIGRATIONS_DIR = path.join(__dirname);
@@ -9,7 +10,7 @@ const MIGRATIONS_DIR = path.join(__dirname);
 (async () => {
   const dbUrl = process.env.SUPABASE_DB_URL;
   if (!dbUrl) {
-    console.error('❌ SUPABASE_DB_URL not set. Add it in Replit Secrets.');
+    console.error('❌ SUPABASE_DB_URL not found in .env.local file.');
     process.exit(1);
   }
 
