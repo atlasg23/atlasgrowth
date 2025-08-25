@@ -30,9 +30,10 @@ export async function generateStaticParams(): Promise<Params[]> {
 export async function generateMetadata({
   params,
 }: {
-  params: Params
+  params: Promise<Params>
 }): Promise<Metadata> {
-  const business = getBizBySlug(params.slug)
+  const resolvedParams = await params
+  const business = getBizBySlug(resolvedParams.slug)
   
   if (!business) {
     return {
@@ -51,10 +52,11 @@ export async function generateMetadata({
   }
 }
 
-export default function BusinessPage({ params }: { params: Params }) {
-  const business = getBizBySlug(params.slug)
+export default async function BusinessPage({ params }: { params: Promise<Params> }) {
+  const resolvedParams = await params
+  const business = getBizBySlug(resolvedParams.slug)
   
-  if (!business || business.template_key !== params.template) {
+  if (!business || business.template_key !== resolvedParams.template) {
     notFound()
   }
 
