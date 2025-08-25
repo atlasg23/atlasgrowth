@@ -1,7 +1,7 @@
 // Simple SQL runner: applies every .sql file in scripts/db in lexicographic order.
 const fs = require('fs');
 const path = require('path');
-const { Client } = require('pg');
+const { Pool } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '../../.env.local') });
 
 const DRY = process.argv.includes('--dry');
@@ -14,9 +14,9 @@ const MIGRATIONS_DIR = path.join(__dirname);
     process.exit(1);
   }
 
-  const client = new Client({
+  const pool = new Pool({
     connectionString: dbUrl,
-    ssl: { rejectUnauthorized: false } // required by Supabase
+    ssl: { rejectUnauthorized: false }
   });
 
   const files = fs.readdirSync(MIGRATIONS_DIR)
@@ -32,11 +32,9 @@ const MIGRATIONS_DIR = path.join(__dirname);
 
   if (DRY) process.exit(0);
 
-  await client.connect();
-
   try {
     // Create a simple migrations table to avoid reruns
-    await client.query(`
+    await pool.query(`
       create table if not exists _migrations (
         filename text primary key,
         applied_at timestamptz default now()
@@ -44,24 +42,33 @@ const MIGRATIONS_DIR = path.join(__dirname);
     `);
 
     for (const f of files) {
-      const already = await client.query('select 1 from _migrations where filename = $1', [f]);
+      const already = await pool.query('select 1 from _migrations where filename = $1', [f]);
       if (already.rowCount) {
         console.log(`Skipping ${f} (already applied)`);
         continue;
       }
       const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, f), 'utf8');
       console.log(`Applying ${f}...`);
-      await client.query('begin');
-      await client.query(sql);
-      await client.query('insert into _migrations(filename) values($1)', [f]);
-      await client.query('commit');
-      console.log(`✅ Applied ${f}`);
+      
+      // Use a transaction
+      const client = await pool.connect();
+      try {
+        await client.query('begin');
+        await client.query(sql);
+        await client.query('insert into _migrations(filename) values($1)', [f]);
+        await client.query('commit');
+        console.log(`✅ Applied ${f}`);
+      } catch (e) {
+        await client.query('rollback');
+        throw e;
+      } finally {
+        client.release();
+      }
     }
   } catch (e) {
-    await client.query('rollback').catch(()=>{});
     console.error('❌ Migration failed:', e.message);
     process.exit(1);
   } finally {
-    await client.end();
+    await pool.end();
   }
 })();
