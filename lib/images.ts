@@ -73,8 +73,8 @@ function resolveImage(
   // 5. Final fallback - use real working images
   const fallbackImages = {
     logo: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400',
-    hero: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200', 
-    about: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800'
+    hero: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200',
+    about: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800'
   }
   return fallbackImages[imageType] || 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400'
 }
