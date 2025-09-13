@@ -1,0 +1,21 @@
+{
+  "totalBusinessTypes": 8,
+  "totalFiles": 11,
+  "businessTypes": [
+    "hvac",
+    "fire-protection",
+    "unknown",
+    "roofing",
+    "plumbing",
+    "pest-control",
+    "pressure-washing",
+    "tree-service"
+  ],
+  "statesRepresented": [
+    "AL",
+    "AR",
+    "LA"
+  ],
+  "totalRecords": 26078,
+  "generatedAt": "2025-09-10T03:35:50.139Z"
+}

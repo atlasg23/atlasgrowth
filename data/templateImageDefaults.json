@@ -1,0 +1,27 @@
+{
+  "plumbing": {
+    "logo": "templates/plumbing/logo.png",
+    "hero": "templates/plumbing/hero.jpg",
+    "about": "templates/plumbing/about.jpg"
+  },
+  "hvac": {
+    "logo": "templates/hvac/logo.png",
+    "hero": "templates/hvac/hero.jpg", 
+    "about": "templates/hvac/about.jpg"
+  },
+  "roofing": {
+    "logo": "templates/roofing/logo.png",
+    "hero": "templates/roofing/hero.jpg",
+    "about": "templates/roofing/about.jpg"
+  },
+  "electrical": {
+    "logo": "templates/electrical/logo.png",
+    "hero": "templates/electrical/hero.jpg",
+    "about": "templates/electrical/about.jpg"
+  },
+  "global": {
+    "logo": "global/logo.png",
+    "hero": "global/hero.jpg",
+    "about": "global/about.jpg"
+  }
+}

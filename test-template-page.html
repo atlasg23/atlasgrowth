@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Template - Test Business Claude</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Test Business for Claude</h1>
+    <p>This is a test template page to verify tracking.</p>
+    
+    <script>
+        console.log('🧪 Test template page loaded')
+        
+        // Simulate the TemplateViewTracker behavior
+        const trackView = async () => {
+            const visitorInfo = {
+                business_slug: 'test-business-claude',
+                template_type: 'plumbing-pro',
+                user_agent: navigator.userAgent,
+                referrer: document.referrer || '',
+                session_id: 'test-session-' + Date.now(),
+                page_loaded_at: new Date().toISOString()
+            }
+
+            console.log('📊 Tracking template view:', visitorInfo)
+
+            try {
+                const response = await fetch('/api/track-view', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(visitorInfo)
+                })
+
+                const data = await response.json()
+                console.log('✅ Template view tracked:', data)
+            } catch (error) {
+                console.error('❌ Failed to track template view:', error)
+            }
+        }
+
+        // Track view when page loads
+        trackView()
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+business_name,phone,email,address,city,state,zip,category,website,rating
+"Joe's Plumbing LLC","(504) 555-0123","joe@joesplumbing.com","123 Main St","New Orleans","LA","70115","Plumbing","https://joesplumbing.com",4.5
+"ABC HVAC Services","(504) 555-0124","info@abchvac.com","456 Oak Ave","Metairie","LA","70001","HVAC","https://abchvac.com",4.8
+"Quick Fix Electrical","(504) 555-0125","contact@quickfixelectric.com","789 Elm St","Kenner","LA","70062","Electrical","",4.2
+"Premier Roofing Co","(504) 555-0126","sales@premierroofing.com","321 Pine St","New Orleans","LA","70118","Roofing","https://premierroofing.com",4.9

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test GHL Button</title>
+</head>
+<body>
+    <h1>Direct GoHighLevel Test</h1>
+    
+    <button onclick="testGHL()">Test GoHighLevel Direct</button>
+    <div id="result"></div>
+
+    <script>
+        async function testGHL() {
+            const payload = {
+                owner_name: "Test Owner",
+                owner_email: "test@example.com",
+                owner_phone: "555-123-4567", 
+                notes: "Test call notes",
+                business_name: "Test Business Co"
+            };
+            
+            console.log('🚀 Testing with payload:', payload);
+            
+            try {
+                const response = await fetch('/api/send-to-ghl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                console.log('📨 Response:', result);
+                
+                document.getElementById('result').innerHTML = 
+                    '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+                if (response.ok) {
+                    alert('✅ GoHighLevel sync successful!');
+                } else {
+                    alert('❌ GoHighLevel sync failed: ' + result.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                alert('❌ Request failed: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
