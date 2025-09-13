@@ -81,7 +81,7 @@ function resolveImage(
 
 // Main resolver function
 export function resolveBusinessImages(business: Business): ResolvedImages {
-  const templateType = normalizeBusinessType(business.business_type, business.niche)
+  const templateType = normalizeBusinessType((business as any).business_type, business.niche)
   
   return {
     logoUrl: resolveImage(business, 'logo', templateType),

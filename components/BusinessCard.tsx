@@ -12,11 +12,10 @@ export default function BusinessCard({ business }: BusinessCardProps) {
   const [showDetails, setShowDetails] = useState(false)
   const rating = business.rating || 0
   const reviews = business.reviews || 0
-  const niche = business.niche?.toLowerCase() || ''
-  const businessType = (business.business_type || business.niche || '').toLowerCase()
-  const isPlumber = niche.includes('plumb') || niche.includes('drainage') || niche.includes('fontanero') || niche.includes('bathroom remodel')
-  const isElectrician = niche.includes('electric')
-  const isHVAC = niche.includes('hvac') || niche.includes('air conditioning') || niche.includes('heating')
+  const businessType = ((business as any).business_type || business.niche || '').toLowerCase()
+  const isPlumber = businessType.includes('plumb') || businessType.includes('drainage') || businessType.includes('fontanero') || businessType.includes('bathroom remodel')
+  const isElectrician = businessType.includes('electric')
+  const isHVAC = businessType.includes('hvac') || businessType.includes('air conditioning') || businessType.includes('heating')
   const hasWebsite = business.site && 
     !business.site.includes('facebook.com') && 
     !business.site.includes('yelp.com')

@@ -39,7 +39,7 @@ type TabType = 'overview' | 'reviews' | 'website' | 'notes' | 'activities'
 
 export default function BusinessDetailTabs({ business, onClose }: BusinessDetailTabsProps) {
   const [activeTab, setActiveTab] = useState<TabType>('overview')
-  const templateOptions = getTemplateOptions(business.business_type || business.niche)
+  const templateOptions = getTemplateOptions((business as any).business_type || business.niche)
   const [selectedTemplate, setSelectedTemplate] = useState(templateOptions[0].value)
 
   const tabs = [
@@ -120,7 +120,7 @@ export default function BusinessDetailTabs({ business, onClose }: BusinessDetail
 function OverviewTab({ business }: { business: Business }) {
   const [sendingTemplate, setSendingTemplate] = useState(false)
   const [templateSent, setTemplateSent] = useState(false)
-  const templateOptions = getTemplateOptions(business.business_type || business.niche)
+  const templateOptions = getTemplateOptions((business as any).business_type || business.niche)
   // Use the actual database slug - don't generate from name
   const businessSlug = business.slug
   
@@ -602,7 +602,7 @@ function WebsiteTab({ business, selectedTemplate, setSelectedTemplate }: { busin
               onChange={(e) => setSelectedTemplate(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {getTemplateOptions(business.business_type || business.niche).map(option => (
+              {getTemplateOptions((business as any).business_type || business.niche).map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -807,7 +807,7 @@ function ActivitiesTab({ business }: { business: Business }) {
       'fire-protection': 'fire-protection'
     }
     
-    const templateType = templateMap[business.business_type?.toLowerCase() || ''] || 'hvac'
+    const templateType = templateMap[(business as any).business_type?.toLowerCase() || ''] || 'hvac'
     const templateUrl = `${window.location.origin}/${templateType}/${business.slug}`
     
     console.log('🌐 Template URL generated:', templateUrl)
@@ -820,7 +820,7 @@ function ActivitiesTab({ business }: { business: Business }) {
       : `Thank you for your time. Here is the website ${templateUrl}. Please let me know what you think. Thanks, Nick.`
     
     // Use business phone, not owner phone
-    const cleanPhone = business.phone.replace(/[^\d]/g, '')
+    const cleanPhone = business.phone?.replace(/[^\d]/g, '') || ''
     
     // Create SMS URL for native apps
     const smsUrl = `sms:${cleanPhone}?body=${encodeURIComponent(message)}`

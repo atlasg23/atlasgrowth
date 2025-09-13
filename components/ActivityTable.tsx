@@ -101,7 +101,7 @@ export default function ActivityTable({ filter }: ActivityTableProps) {
     const businessMap = new Map(businessData?.map(b => [b.id, b.name]) || [])
 
     // Skip template views for now - table doesn't exist
-    const viewData = null
+    const viewData: any[] = []
     const viewError = null
 
     // Combine all activities
@@ -128,13 +128,13 @@ export default function ActivityTable({ filter }: ActivityTableProps) {
         template_url: call.template_url
       })) || []
 
-    const viewActivities: ActivityData[] = viewData?.map(view => ({
+    const viewActivities: ActivityData[] = viewData.map((view: any) => ({
       id: `view-${view.id}`,
       type: 'template_viewed' as const,
       business_name: view.business_slug?.replace(/-/g, ' ') || 'Unknown Business',
       user: 'Prospect',
       timestamp: view.viewed_at
-    })) || []
+    }))
 
     // Combine and filter
     let allActivities = [...callActivities, ...templateSentActivities, ...viewActivities]
@@ -169,14 +169,14 @@ export default function ActivityTable({ filter }: ActivityTableProps) {
     if (callError) throw callError
 
     // Skip template views for now - table doesn't exist
-    const viewStats = null
+    const viewStats: any[] = []
     const viewError = null
 
     const totalCalls = callStats?.length || 0
     const nickCalls = callStats?.filter(c => c.user_name === 'nick').length || 0
     const jacksonCalls = callStats?.filter(c => c.user_name === 'jackson').length || 0
     const templatesSent = callStats?.filter(c => c.template_sent).length || 0
-    const templatesViewed = viewStats?.length || 0
+    const templatesViewed = viewStats.length
     const answeredCalls = callStats?.filter(c => c.outcome === 'Answered' || c.outcome === 'Interested').length || 0
 
     setAnalytics({
