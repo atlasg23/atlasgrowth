@@ -37,6 +37,9 @@ export default async function BusinessPage({
   const TemplateComponent = getTemplateComponent(expectedTemplateKey)
 
   // Convert lead to business format for templates
+  // Extract image overrides if they exist
+  const imageOverrides = lead.image_overrides || {}
+
   const business = {
     id: lead.id,
     name: lead.name,
@@ -63,9 +66,10 @@ export default async function BusinessPage({
     template_key: lead.business_type,
     primary_color: undefined,
     secondary_color: undefined,
-    logo: lead.logo,
-    hero_image: undefined,
-    about_image: undefined,
+    logo: imageOverrides.logo || lead.logo,
+    hero_image: imageOverrides.hero,
+    about_image: imageOverrides.about,
+    image_overrides: imageOverrides, // Pass the overrides object for proper resolution
     phone_carrier_type: lead.phone_phones_enricher_carrier_type,
     working_hours: lead.working_hours ? JSON.parse(lead.working_hours) : undefined,
     latitude: lead.latitude,

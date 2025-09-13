@@ -50,4 +50,9 @@ export interface Business {
   business_status?: string
   created_at?: string
   updated_at?: string
+  image_overrides?: {
+    logo?: string
+    hero?: string
+    about?: string
+  }
 }
