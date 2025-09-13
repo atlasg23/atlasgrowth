@@ -126,11 +126,13 @@ export default function PlumbingTemplatePro({ business }: PlumbingTemplateProPro
       <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 opacity-20">
-          <div 
-            className="w-full h-full bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `url('${images.heroUrl}')`
-            }}
+          <Image
+            src={images.heroUrl}
+            alt="Professional plumbing services background"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
           />
         </div>
         
@@ -282,12 +284,15 @@ export default function PlumbingTemplatePro({ business }: PlumbingTemplateProPro
               </div>
             </div>
             <div className="relative">
-              <div 
-                className="w-full h-96 bg-cover bg-center rounded-lg shadow-lg"
-                style={{
-                  backgroundImage: `url('${images.aboutUrl}')`
-                }}
-              />
+              <div className="w-full h-96 rounded-lg shadow-lg overflow-hidden relative">
+                <Image
+                  src={images.aboutUrl}
+                  alt="About our plumbing services"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
               <div className="absolute -bottom-6 -right-6 bg-yellow-400 text-blue-900 p-6 rounded-lg shadow-lg">
                 <div className="text-2xl font-bold">15+</div>
                 <div className="text-sm font-medium">Years Experience</div>

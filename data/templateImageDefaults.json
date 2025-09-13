@@ -1,27 +1,27 @@
 {
   "plumbing": {
-    "logo": "templates/plumbing/logo.png",
-    "hero": "templates/plumbing/hero.jpg",
-    "about": "templates/plumbing/about.jpg"
+    "logo": "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400",
+    "hero": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200",
+    "about": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"
   },
   "hvac": {
-    "logo": "templates/hvac/logo.png",
-    "hero": "templates/hvac/hero.jpg", 
-    "about": "templates/hvac/about.jpg"
+    "logo": "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400",
+    "hero": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200", 
+    "about": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"
   },
   "roofing": {
-    "logo": "templates/roofing/logo.png",
-    "hero": "templates/roofing/hero.jpg",
-    "about": "templates/roofing/about.jpg"
+    "logo": "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400",
+    "hero": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200",
+    "about": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"
   },
   "electrical": {
-    "logo": "templates/electrical/logo.png",
-    "hero": "templates/electrical/hero.jpg",
-    "about": "templates/electrical/about.jpg"
+    "logo": "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400",
+    "hero": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200",
+    "about": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"
   },
   "global": {
-    "logo": "global/logo.png",
-    "hero": "global/hero.jpg",
-    "about": "global/about.jpg"
+    "logo": "https://images.unsplash.com/photo-1581244277943-fe4a9c777189?w=400",
+    "hero": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=1200",
+    "about": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"
   }
 }

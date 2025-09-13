@@ -61,13 +61,25 @@ function resolveImage(
   // 3. Check template default
   const templateDefaults = (templateImageDefaults as any)[templateType]
   if (templateDefaults?.[imageType]) {
-    return getPublicUrlFromPath(templateDefaults[imageType])
+    const templateDefault = templateDefaults[imageType]
+    // If template default is already a full URL, return as-is
+    if (templateDefault.startsWith('http://') || templateDefault.startsWith('https://')) {
+      return templateDefault
+    }
+    // Otherwise, it's a storage path, get public URL
+    return getPublicUrlFromPath(templateDefault)
   }
 
   // 4. Fall back to global default
   const globalDefaults = (templateImageDefaults as any).global
   if (globalDefaults?.[imageType]) {
-    return getPublicUrlFromPath(globalDefaults[imageType])
+    const globalDefault = globalDefaults[imageType]
+    // If global default is already a full URL, return as-is
+    if (globalDefault.startsWith('http://') || globalDefault.startsWith('https://')) {
+      return globalDefault
+    }
+    // Otherwise, it's a storage path, get public URL
+    return getPublicUrlFromPath(globalDefault)
   }
 
   // 5. Final fallback - use real working images
